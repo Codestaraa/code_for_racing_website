@@ -1,0 +1,104 @@
+#code which scrapes data from racing website in order to obtain a list of race tracks from that day and creates a csv called race_data.csv,
+#includes a bot function which picks out a random race and generates a new csv file whcih the random race.
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import pandas as pd
+import random
+
+def scrape_track_names_selenium(url):
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')  # Run in headless mode to avoid opening a visible browser window
+    chrome_options.add_argument('--disable-gpu')  # Disable GPU acceleration to prevent certain issues
+    driver = webdriver.Chrome(options=chrome_options)
+
+    try:
+        driver.get(url)
+
+        # Wait for the page to load (you might need to adjust the wait time)
+        driver.implicitly_wait(10)
+
+        # Locate the track elements using Selenium
+        track_elements = driver.find_elements(By.CSS_SELECTOR, '.css-1h8fvx5-TabsItem-TabsItem-TabsItem-TabsItem-TabsItem-TabsItem-TabsItem-TabsItem a.e17e4d890')
+
+        # Extract track names from the elements
+        track_names = [track.get_attribute('title') for track in track_elements]
+
+        return track_names
+
+    finally:
+        driver.quit()
+
+# Specify the URL of the website
+url = https://getsetbet.com.au/racing/
+
+# Call the function to scrape track names using Selenium
+track_names_selenium = scrape_track_names_selenium(url)
+
+# Check if track_names_selenium is not empty
+if track_names_selenium:
+    # Create a DataFrame
+    df_races_data = pd.DataFrame({'Track Names': track_names_selenium})
+
+    # Save the DataFrame to a CSV file
+    df_races_data.to_csv('races_data.csv', index=False)
+
+    print("Scraped Track Names (using Selenium):")
+    print(df_races_data)
+else:
+    print("Failed to scrape track names using Selenium.")
+
+
+def scrape_track_names_selenium(url):
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(options=chrome_options)
+
+    try:
+        driver.get(url)
+        driver.implicitly_wait(10)
+
+        track_elements = driver.find_elements(By.CSS_SELECTOR, '.css-1h8fvx5-TabsItem-TabsItem-TabsItem-TabsItem-TabsItem-TabsItem-TabsItem-TabsItem a.e17e4d890')
+        track_names = [track.get_attribute('title') for track in track_elements]
+
+        return track_names
+
+    finally:
+        driver.quit()
+
+def export_random_track_csv(input_csv, output_csv):
+    df_races_data = pd.read_csv(input_csv)
+
+    if not df_races_data.empty:
+        random_track = random.choice(df_races_data['Track Names'])
+        df_random_track = pd.DataFrame({'Random Track': [random_track]})
+        df_random_track.to_csv(output_csv, index=False)
+
+        print(f"Random Track Selected and exported to {output_csv}:")
+        print(df_random_track)
+    else:
+        print(f"No track names available in {input_csv}.")
+
+# Specify the URL of the website
+url = https://getsetbet.com.au/racing/
+
+# Call the function to scrape track names using Selenium
+track_names_selenium = scrape_track_names_selenium(url)
+
+# Check if track_names_selenium is not empty
+if track_names_selenium:
+    # Create a DataFrame
+    df_races_data = pd.DataFrame({'Track Names': track_names_selenium})
+
+    # Save the DataFrame to a CSV file
+    df_races_data.to_csv('races_data.csv', index=False)
+
+    print("Scraped Track Names (using Selenium):")
+    print(df_races_data)
+
+    # Call the function to select a random track and export it to a new CSV
+    export_random_track_csv('races_data.csv', 'random_track.csv')
+else:
+    print("Failed to scrape track names using Selenium.")
